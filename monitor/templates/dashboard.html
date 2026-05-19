@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+{% import "macros.html" as macros %}
+
+{% block title %}Dashboard Système - Monitoring en temps réel{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    
+    <!-- Load Average Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-3"><i class="bi bi-activity"></i> Load Average</h2>
+        </div>
+        {{ macros.metric_card("Load 1 min", "0.00", "", "1-circle", "danger", "load1-value") }}
+        {{ macros.metric_card("Load 5 min", "0.00", "", "5-circle", "warning", "load5-value") }}
+        {{ macros.metric_card("Load 15 min", "0.00", "", "clock", "info", "load15-value") }}
+        {{ macros.metric_card("CPU Count", "0", " cores", "cpu", "primary", "cpu-count-value") }}
+    </div>
+    
+    <!-- CPU Section -->
+    <div class="row mb-4" id="cpu">
+        <div class="col-12">
+            <h2 class="mb-3"><i class="bi bi-cpu"></i> Processeur</h2>
+        </div>
+        <div class="col-md-6">
+            {{ macros.line_chart("Utilisation CPU en temps réel", "cpuChart") }}
+        </div>
+        <div class="col-md-6">
+            {{ macros.doughnut_chart("Répartition CPU", "cpuDoughnutChart") }}
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">CPU par cœur</h5>
+                </div>
+                <div class="card-body" id="per-cpu-bars">
+                    <!-- Les barres de progression seront ajoutées dynamiquement -->
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Informations CPU</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">Fréquence</dt>
+                        <dd class="col-sm-8" id="cpu-freq">0 MHz</dd>
+                        <dt class="col-sm-4">Nombre de cœurs</dt>
+                        <dd class="col-sm-8" id="cpu-count">0</dd>
+                        <dt class="col-sm-4">Utilisation moyenne</dt>
+                        <dd class="col-sm-8" id="cpu-avg">0%</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Memory Section -->
+    <div class="row mb-4" id="memory">
+        <div class="col-12">
+            <h2 class="mb-3"><i class="bi bi-memory"></i> Mémoire</h2>
+        </div>
+        <div class="col-md-6">
+            {{ macros.line_chart("Utilisation Mémoire", "memoryChart") }}
+        </div>
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Détails Mémoire RAM</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <h6>RAM Physique</h6>
+                        {{ macros.progress_bar("Utilisée", 0, "primary", "ram-percent") }}
+                        <div class="d-flex justify-content-between text-muted small">
+                            <span id="ram-used">0 GB</span>
+                            <span id="ram-total">0 GB</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h6>Swap</h6>
+                        {{ macros.progress_bar("Utilisée", 0, "warning", "swap-percent") }}
+                        <div class="d-flex justify-content-between text-muted small">
+                            <span id="swap-used">0 GB</span>
+                            <span id="swap-total">0 GB</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Disk Section -->
+    <div class="row mb-4" id="disk">
+        <div class="col-12">
+            <h2 class="mb-3"><i class="bi bi-hdd"></i> Disques</h2>
+        </div>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Partitions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Partition</th>
+                                    <th>Point de montage</th>
+                                    <th>Type</th>
+                                    <th>Taille totale</th>
+                                    <th>Utilisé</th>
+                                    <th>Libre</th>
+                                    <th>Utilisation</th>
+                                </tr>
+                            </thead>
+                            <tbody id="disk-table-body">
+                                <!-- Les lignes seront ajoutées dynamiquement -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Network Section -->
+    <div class="row mb-4" id="network">
+        <div class="col-12">
+            <h2 class="mb-3"><i class="bi bi-wifi"></i> Réseau</h2>
+        </div>
+        {{ macros.metric_card("Données envoyées", "0", " MB", "arrow-up-circle", "success", "net-sent") }}
+        {{ macros.metric_card("Données reçues", "0", " MB", "arrow-down-circle", "info", "net-recv") }}
+        {{ macros.metric_card("Paquets envoyés", "0", "", "box-arrow-up", "primary", "packets-sent") }}
+        {{ macros.metric_card("Paquets reçus", "0", "", "box-arrow-down", "warning", "packets-recv") }}
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-12">
+            {{ macros.line_chart("Trafic réseau", "networkChart") }}
+        </div>
+    </div>
+    
+    <!-- System Info Section -->
+    <div class="row mb-4" id="system">
+        <div class="col-12">
+            <h2 class="mb-3"><i class="bi bi-info-circle"></i> Informations Système</h2>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Système d'exploitation</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">Plateforme</dt>
+                        <dd class="col-sm-8" id="sys-platform">--</dd>
+                        <dt class="col-sm-4">Version</dt>
+                        <dd class="col-sm-8" id="sys-version">--</dd>
+                        <dt class="col-sm-4">Architecture</dt>
+                        <dd class="col-sm-8" id="sys-arch">--</dd>
+                        <dt class="col-sm-4">Hostname</dt>
+                        <dd class="col-sm-8" id="sys-hostname">--</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Uptime</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">Démarrage</dt>
+                        <dd class="col-sm-8" id="sys-boot">--</dd>
+                        <dt class="col-sm-4">Uptime</dt>
+                        <dd class="col-sm-8" id="sys-uptime">--</dd>
+                        <dt class="col-sm-4">Processeur</dt>
+                        <dd class="col-sm-8" id="sys-processor">--</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
+
+{% endblock %}

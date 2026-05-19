@@ -1,0 +1,109 @@
+{# Macro pour créer une carte de métrique simple #}
+{% macro metric_card(title, value, unit="", icon="", color="primary", id="") %}
+<div class="col-md-3 mb-4">
+    <div class="card metric-card border-{{ color }}">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-muted mb-2">{{ title }}</h6>
+                    <h3 class="mb-0" id="{{ id }}">{{ value }}{{ unit }}</h3>
+                </div>
+                {% if icon %}
+                <div class="metric-icon text-{{ color }}">
+                    <i class="bi bi-{{ icon }} fs-1"></i>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endmacro %}
+
+{# Macro pour créer un graphique en ligne (Chart.js) #}
+{% macro line_chart(title, chart_id, height="300") %}
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">{{ title }}</h5>
+    </div>
+    <div class="card-body">
+        <canvas id="{{ chart_id }}" height="{{ height }}"></canvas>
+    </div>
+</div>
+{% endmacro %}
+
+{# Macro pour créer un graphique en anneau (Doughnut) #}
+{% macro doughnut_chart(title, chart_id, height="250") %}
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">{{ title }}</h5>
+    </div>
+    <div class="card-body text-center">
+        <canvas id="{{ chart_id }}" height="{{ height }}"></canvas>
+    </div>
+</div>
+{% endmacro %}
+
+{# Macro pour créer une barre de progression #}
+{% macro progress_bar(label, value, color="primary", id="") %}
+<div class="mb-3">
+    <div class="d-flex justify-content-between mb-1">
+        <span class="text-muted">{{ label }}</span>
+        <span class="fw-bold" id="{{ id }}">{{ value }}%</span>
+    </div>
+    <div class="progress" style="height: 20px;">
+        <div class="progress-bar bg-{{ color }}" role="progressbar" 
+             style="width: {{ value }}%;" 
+             aria-valuenow="{{ value }}" 
+             aria-valuemin="0" 
+             aria-valuemax="100">
+        </div>
+    </div>
+</div>
+{% endmacro %}
+
+{# Macro pour créer un tableau de données #}
+{% macro data_table(title, headers, rows, id="") %}
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">{{ title }}</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover" id="{{ id }}">
+                <thead>
+                    <tr>
+                        {% for header in headers %}
+                        <th>{{ header }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {{ caller() }}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endmacro %}
+
+{# Macro pour un badge de statut #}
+{% macro status_badge(text, type="success") %}
+<span class="badge bg-{{ type }} rounded-pill">{{ text }}</span>
+{% endmacro %}
+
+{# Macro pour une carte d'information système #}
+{% macro info_card(title, items) %}
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">{{ title }}</h5>
+    </div>
+    <div class="card-body">
+        <dl class="row mb-0">
+            {% for key, value in items.items() %}
+            <dt class="col-sm-4">{{ key }}</dt>
+            <dd class="col-sm-8">{{ value }}</dd>
+            {% endfor %}
+        </dl>
+    </div>
+</div>
+{% endmacro %}

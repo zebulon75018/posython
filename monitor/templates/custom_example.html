@@ -1,0 +1,298 @@
+{% extends "base.html" %}
+{% import "macros.html" as macros %}
+
+{# 
+    EXEMPLE D'UTILISATION DES MACROS
+    
+    Ce fichier montre comment créer facilement de nouvelles pages
+    de monitoring avec les macros Jinja réutilisables.
+    
+    Pour l'utiliser, ajoutez une route dans app.py :
+    
+    @app.route('/custom')
+    def custom_dashboard():
+        return render_template('custom_example.html')
+#}
+
+{% block title %}Dashboard Personnalisé - Exemple{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    
+    <h1 class="mb-4">Exemple d'utilisation des Macros</h1>
+    
+    {# ========================================
+       SECTION 1 : Cartes de Métriques
+       ======================================== #}
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2><i class="bi bi-card-heading"></i> Cartes de Métriques</h2>
+            <p class="text-muted">Utilisez la macro <code>metric_card</code> pour créer des cartes de métriques colorées.</p>
+        </div>
+        
+        {# Différentes couleurs disponibles #}
+        {{ macros.metric_card("Métrique Primary", "42", "%", "speedometer2", "primary") }}
+        {{ macros.metric_card("Métrique Success", "85", "%", "check-circle", "success") }}
+        {{ macros.metric_card("Métrique Warning", "65", "°C", "exclamation-triangle", "warning") }}
+        {{ macros.metric_card("Métrique Danger", "95", "%", "x-circle", "danger") }}
+    </div>
+    
+    {# ========================================
+       SECTION 2 : Graphiques
+       ======================================== #}
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2><i class="bi bi-graph-up"></i> Graphiques</h2>
+            <p class="text-muted">Créez facilement des graphiques avec Chart.js.</p>
+        </div>
+        
+        <div class="col-md-6">
+            {{ macros.line_chart("Graphique en Ligne", "exampleLineChart", "250") }}
+        </div>
+        
+        <div class="col-md-6">
+            {{ macros.doughnut_chart("Graphique en Anneau", "exampleDoughnutChart", "250") }}
+        </div>
+    </div>
+    
+    {# ========================================
+       SECTION 3 : Barres de Progression
+       ======================================== #}
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2><i class="bi bi-bar-chart"></i> Barres de Progression</h2>
+            <p class="text-muted">Macro <code>progress_bar</code> pour afficher des pourcentages.</p>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    {{ macros.progress_bar("Processus A", 75, "primary") }}
+                    {{ macros.progress_bar("Processus B", 45, "success") }}
+                    {{ macros.progress_bar("Processus C", 90, "danger") }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Avec IDs pour JavaScript</h5>
+                    {{ macros.progress_bar("Valeur Dynamique 1", 0, "info", "dynamic-1") }}
+                    {{ macros.progress_bar("Valeur Dynamique 2", 0, "warning", "dynamic-2") }}
+                    <button class="btn btn-primary mt-2" onclick="updateDynamicValues()">
+                        Mettre à jour
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {# ========================================
+       SECTION 4 : Tableaux de Données
+       ======================================== #}
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2><i class="bi bi-table"></i> Tableaux de Données</h2>
+            <p class="text-muted">Macro <code>data_table</code> pour créer des tableaux.</p>
+        </div>
+        
+        <div class="col-12">
+            {% call macros.data_table("Exemple de Tableau", ["Nom", "Valeur", "Status", "Action"]) %}
+                <tr>
+                    <td>Item 1</td>
+                    <td>123</td>
+                    <td>{{ macros.status_badge("Actif", "success") }}</td>
+                    <td><button class="btn btn-sm btn-primary">Voir</button></td>
+                </tr>
+                <tr>
+                    <td>Item 2</td>
+                    <td>456</td>
+                    <td>{{ macros.status_badge("En cours", "warning") }}</td>
+                    <td><button class="btn btn-sm btn-primary">Voir</button></td>
+                </tr>
+                <tr>
+                    <td>Item 3</td>
+                    <td>789</td>
+                    <td>{{ macros.status_badge("Erreur", "danger") }}</td>
+                    <td><button class="btn btn-sm btn-primary">Voir</button></td>
+                </tr>
+            {% endcall %}
+        </div>
+    </div>
+    
+    {# ========================================
+       SECTION 5 : Badges de Statut
+       ======================================== #}
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2><i class="bi bi-tags"></i> Badges de Statut</h2>
+            <p class="text-muted">Macro <code>status_badge</code> pour des indicateurs visuels.</p>
+        </div>
+        
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Différents types de badges :</h5>
+                    <p>
+                        {{ macros.status_badge("Primary", "primary") }}
+                        {{ macros.status_badge("Success", "success") }}
+                        {{ macros.status_badge("Danger", "danger") }}
+                        {{ macros.status_badge("Warning", "warning") }}
+                        {{ macros.status_badge("Info", "info") }}
+                        {{ macros.status_badge("Secondary", "secondary") }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {# ========================================
+       SECTION 6 : Cartes d'Information
+       ======================================== #}
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2><i class="bi bi-info-square"></i> Cartes d'Information</h2>
+            <p class="text-muted">Macro <code>info_card</code> pour des listes clé-valeur.</p>
+        </div>
+        
+        <div class="col-md-6">
+            {{ macros.info_card("Informations Serveur", {
+                "Hostname": "serveur-prod-01",
+                "IP": "192.168.1.100",
+                "OS": "Ubuntu 22.04 LTS",
+                "Uptime": "45 jours 12h 30m"
+            }) }}
+        </div>
+        
+        <div class="col-md-6">
+            {{ macros.info_card("Configuration", {
+                "Version": "1.0.0",
+                "Environnement": "Production",
+                "Base de données": "PostgreSQL 14",
+                "Cache": "Redis 7.0"
+            }) }}
+        </div>
+    </div>
+    
+    {# ========================================
+       CODE EXEMPLE
+       ======================================== #}
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2><i class="bi bi-code-square"></i> Code Source</h2>
+        </div>
+        
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Exemple de code Jinja</h5>
+                </div>
+                <div class="card-body">
+                    <pre><code>{% raw %}{% from "macros.html" import metric_card, line_chart, progress_bar %}
+
+<!-- Carte de métrique -->
+{{ metric_card(
+    title="Titre",
+    value="42",
+    unit="%",
+    icon="speedometer",
+    color="primary",
+    id="my-metric"
+) }}
+
+<!-- Graphique -->
+{{ line_chart(
+    title="Mon Graphique",
+    chart_id="myChart",
+    height="300"
+) }}
+
+<!-- Barre de progression -->
+{{ progress_bar(
+    label="Progression",
+    value=75,
+    color="success",
+    id="my-progress"
+) }}{% endraw %}</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Exemple de graphique personnalisé
+document.addEventListener('DOMContentLoaded', function() {
+    // Graphique en ligne exemple
+    const lineCtx = document.getElementById('exampleLineChart');
+    if (lineCtx) {
+        new Chart(lineCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun'],
+                datasets: [{
+                    label: 'Ventes',
+                    data: [12, 19, 3, 5, 2, 3],
+                    borderColor: 'rgba(74, 144, 226, 1)',
+                    backgroundColor: 'rgba(74, 144, 226, 0.2)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true }
+                }
+            }
+        });
+    }
+    
+    // Graphique en anneau exemple
+    const doughnutCtx = document.getElementById('exampleDoughnutChart');
+    if (doughnutCtx) {
+        new Chart(doughnutCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Catégorie A', 'Catégorie B', 'Catégorie C'],
+                datasets: [{
+                    data: [300, 50, 100],
+                    backgroundColor: [
+                        'rgba(74, 144, 226, 1)',
+                        'rgba(40, 167, 69, 1)',
+                        'rgba(255, 193, 7, 1)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+    }
+});
+
+// Fonction pour mettre à jour les valeurs dynamiques
+function updateDynamicValues() {
+    const random1 = Math.floor(Math.random() * 100);
+    const random2 = Math.floor(Math.random() * 100);
+    
+    document.getElementById('dynamic-1').textContent = random1 + '%';
+    document.getElementById('dynamic-2').textContent = random2 + '%';
+    
+    const bar1 = document.getElementById('dynamic-1').previousElementSibling.querySelector('.progress-bar');
+    const bar2 = document.getElementById('dynamic-2').previousElementSibling.querySelector('.progress-bar');
+    
+    bar1.style.width = random1 + '%';
+    bar2.style.width = random2 + '%';
+}
+</script>
+{% endblock %}

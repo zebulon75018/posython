@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dashboard Système{% endblock %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h4><i class="bi bi-speedometer2"></i> SysDashboard</h4>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="/" class="nav-link active">
+                <i class="bi bi-house-door"></i>
+                <span>Tableau de bord</span>
+            </a>
+            <a href="#cpu" class="nav-link">
+                <i class="bi bi-cpu"></i>
+                <span>CPU</span>
+            </a>
+            <a href="#memory" class="nav-link">
+                <i class="bi bi-memory"></i>
+                <span>Mémoire</span>
+            </a>
+            <a href="#disk" class="nav-link">
+                <i class="bi bi-hdd"></i>
+                <span>Disques</span>
+            </a>
+            <a href="#network" class="nav-link">
+                <i class="bi bi-wifi"></i>
+                <span>Réseau</span>
+            </a>
+            <a href="#system" class="nav-link">
+                <i class="bi bi-info-circle"></i>
+                <span>Système</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <p class="text-muted mb-0">
+                <small>Dernière mise à jour:</small><br>
+                <span id="last-update">--:--:--</span>
+            </p>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Navigation Bar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+            <div class="container-fluid">
+                <button class="btn btn-link" id="sidebarToggle">
+                    <i class="bi bi-list fs-4"></i>
+                </button>
+                
+                <span class="navbar-text ms-auto">
+                    <i class="bi bi-clock"></i>
+                    <span id="current-time"></span>
+                </span>
+            </div>
+        </nav>
+        
+        <!-- Page Content -->
+        <div class="content-wrapper">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+    
+    {% block extra_js %}{% endblock %}
+    
+    <script>
+        // Toggle sidebar
+        document.getElementById('sidebarToggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+            document.querySelector('.main-content').classList.toggle('expanded');
+        });
+        
+        // Update current time
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('current-time').textContent = now.toLocaleTimeString('fr-FR');
+        }
+        updateTime();
+        setInterval(updateTime, 1000);
+    </script>
+</body>
+</html>
